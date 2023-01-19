@@ -1,0 +1,81 @@
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+
+  ## MYSQL ##
+  datasource:
+    url: jdbc:mysql://localhost:3306/rns_database
+    username: admin
+    password: 1q2w3e4r!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update # 추후에 변경해야 함
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+  redis:
+    pool:
+      min-idle: 0
+      max-idle: 8
+      max-active: 8
+
+  ## Rabbit MQ
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+## Jwt Secret ##
+secret:
+  jwt_secret_key: ENC(2f6Oity5sF8WkLDr2Mpds8cjktfyD2u1fY8iKMEP7Zj/SsgwJYkoTRh3KgBxvi3CyHb4uP2kucsNThImNOBzKgVsVCtxkf6J)
+
+## serverName ##
+server:
+  port: 8083
+  url: localhost
+  ## https
+  tomcat:
+    use-relative-redirects: true
+
+  ## timeout ??
+  servlet:
+    session:
+      timeout: 1800
+
+## log4j
+logging:
+  config: classpath:log4j2.yml
+
+## Naver, Kakao i Cloud Secret ##
+cloud:
+  kakao:
+    access_key: ENC(6gFOH9ncPgSZbI1dwSeFNPHegC/kfC9YP6tKEQ1JKih+0DRL9TghCGPk3xirNcII)
+    secret_key: ENC(lD8m1TPVEfrXOwZZSh81u8khM3MIg6W136YRmbUfAqfQP0qGD8s//9WJVx45FpkG0hPpg0j/F4CW0JA6c7fyDPojXuZq+oFjCnXCVantysjfyvBpyrbqZiG02ZTO0ga4)
+  naver:
+    access_key: ENC(t602Ydz+VBw2v27a5hwKPLLDC6sHsO4s95xtiTQOz+Q=)
+    secret_key: ENC(BIJAGR/HVKxbRfuKgEi0ag6QVE8u9DMumGERpG7Ly68ua0fXftBObvig56cDVjR8HuMxSB9SotA=)
+    service_id: ENC(OrXSy80smdbJH7LTtEGNOrNUblV6pB+pxifZHtOsrFhNXhb7hFKFdg==)
+    sender_phone: ENC(qeaNReAFWvI/JZkooadzlNCb5ybISmYD)
+
+
+## GOOGLE LOGIN ##
+google:
+  client-id: 835228927820-80mfcdq6p90s97pqbo582f9f1s0ng935.apps.googleusercontent.com
+  client-secret: ENC(wXHk/fbb2D+cqVKxwJIcOpZrOSBcWO8GLrT+jdQ7CURSkBUJpv5KS+mJ1zLYbqcd)
+  scope: email
+  redirect-uri: http://localhost:8080/google/redirect
+
+## jasypt
+jasypt:
+  encryptor:
+    password: RknSA3#jkDS34*bkj$j3kl12@#
