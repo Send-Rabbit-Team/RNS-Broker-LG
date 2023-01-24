@@ -37,11 +37,9 @@ public class MessageConsumer {
             System.out.println("메시지 내용: " + messageDto.getContent());
 
             MessageResultDto messageResultDto = receiveMessageDto.getMessageResultDto();
-            dlxProcessingErrorHandler.handleErrorProcessingMessage(message, channel);
 
-//            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-//
-//            sendResponseToSendServer(messageResultDto);
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+            sendResponseToSendServer(messageResultDto);
         }catch (IOException e){
             log.warn("Error processing message:" + new String(message.getBody()) + ":" + e.getMessage());
             dlxProcessingErrorHandler.handleErrorProcessingMessage(message, channel);
