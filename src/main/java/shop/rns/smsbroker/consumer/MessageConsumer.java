@@ -1,6 +1,5 @@
 package shop.rns.smsbroker.consumer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,7 @@ import static shop.rns.smsbroker.utils.rabbitmq.RabbitUtil.*;
 @Component
 @RequiredArgsConstructor
 public class MessageConsumer {
-    private final DlxProcessingErrorHandler dlxProcessingErrorHandler = new DlxProcessingErrorHandler();
+    private final DlxProcessingErrorHandler dlxProcessingErrorHandler;
     private final RabbitTemplate rabbitTemplate;
 
     private final ObjectMapper objectMapper;
@@ -38,10 +37,11 @@ public class MessageConsumer {
             System.out.println("메시지 내용: " + messageDto.getContent());
 
             MessageResultDto messageResultDto = receiveMessageDto.getMessageResultDto();
+            dlxProcessingErrorHandler.handleErrorProcessingMessage(message, channel);
 
-            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-
-            sendResponseToSendServer(messageResultDto);
+//            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+//
+//            sendResponseToSendServer(messageResultDto);
         }catch (IOException e){
             log.warn("Error processing message:" + new String(message.getBody()) + ":" + e.getMessage());
             dlxProcessingErrorHandler.handleErrorProcessingMessage(message, channel);

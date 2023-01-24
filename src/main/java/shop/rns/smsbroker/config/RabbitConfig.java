@@ -71,7 +71,11 @@ public class RabbitConfig {
     // DLX QUEUE
     @Bean
     public Queue smsWaitLGQueue(){
-        return new Queue(LG_WAIT_QUEUE_NAME, true);
+        Map<String, Object> args = new HashMap<>();
+        args.put("x-message-ttl", WAIT_TTL);
+        args.put("x-dead-letter-exchange", SMS_EXCHANGE_NAME);
+        args.put("x-dead-letter-routing-key", LG_WORK_ROUTING_KEY);
+        return new Queue(LG_WAIT_QUEUE_NAME, true, false, false, args);
     }
 
     // DLX Exchange
