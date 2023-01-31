@@ -40,6 +40,7 @@ public class MessageConsumer {
 
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
             sendResponseToSendServer(messageResultDto);
+//            dlxProcessingErrorHandler.handleErrorProcessingMessage(message, channel);
         }catch (IOException e){
             log.warn("Error processing message:" + new String(message.getBody()) + ":" + e.getMessage());
             dlxProcessingErrorHandler.handleErrorProcessingMessage(message, channel);
@@ -51,6 +52,7 @@ public class MessageConsumer {
         changeMassageStatusSuccess(messageResultDto);
 
         rabbitTemplate.convertAndSend(RECEIVE_EXCHANGE_NAME, LG_RECEIVE_ROUTING_KEY, messageResultDto);
+        log.info("response to sender server: {}", messageResultDto.getMessageId());
     }
 
     public MessageResultDto changeMassageStatusSuccess(MessageResultDto messageResultDto){

@@ -24,7 +24,7 @@ public class SmsMessageDto {
 
     private String content;
 
-    private String image;
+    private List<String> images;
 
     private MessageStatus messageStatus;
 
