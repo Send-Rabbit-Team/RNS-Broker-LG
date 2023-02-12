@@ -10,6 +10,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 import shop.rns.smsbroker.config.status.MessageStatus;
 import shop.rns.smsbroker.dlx.DlxProcessingErrorHandler;
+import shop.rns.smsbroker.dlx.RabbitmqHeader;
 import shop.rns.smsbroker.dto.broker.ReceiveMessageDto;
 import shop.rns.smsbroker.dto.message.MessageResultDto;
 import shop.rns.smsbroker.dto.sms.SmsMessageDto;
@@ -38,8 +39,12 @@ public class MessageConsumer {
 
             MessageResultDto messageResultDto = receiveMessageDto.getMessageResultDto();
 
+            RabbitmqHeader rabbitmqHeader = new RabbitmqHeader(message.getMessageProperties().getHeaders());
+            long retryCount = rabbitmqHeader.getFailedRetryCount();
+
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-            sendResponseToSendServer(messageResultDto);
+            sendResponseToSendServer(messageResultDto, retryCount);
+
 //            channel.basicReject(message.getMessageProperties().getDeliveryTag(), false);
         }catch (IOException e){
             log.warn("Error processing message:" + new String(message.getBody()) + ":" + e.getMessage());
@@ -48,15 +53,11 @@ public class MessageConsumer {
     }
 
     // RESPONSE TO SEND SERVER
-    public void sendResponseToSendServer(final MessageResultDto messageResultDto){
-        changeMassageStatusSuccess(messageResultDto);
+    public void sendResponseToSendServer(final MessageResultDto messageResultDto, long retryCount){
+        messageResultDto.setMessageStatus(MessageStatus.SUCCESS);
+        messageResultDto.setRetryCount(retryCount);
 
         rabbitTemplate.convertAndSend(RECEIVE_EXCHANGE_NAME, LG_RECEIVE_ROUTING_KEY, messageResultDto);
         log.info("response to sender server: {}", messageResultDto.getMessageId());
-    }
-
-    public MessageResultDto changeMassageStatusSuccess(MessageResultDto messageResultDto){
-        messageResultDto.setMessageStatus(MessageStatus.SUCCESS);
-        return messageResultDto;
     }
 }

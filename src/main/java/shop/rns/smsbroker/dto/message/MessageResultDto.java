@@ -21,5 +21,7 @@ public class MessageResultDto {
 
     private MessageStatus messageStatus;
 
+    private long retryCount;
+
     private LocalDateTime createdAt;
 }
